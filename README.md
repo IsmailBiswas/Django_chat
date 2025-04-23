@@ -1,4 +1,4 @@
-## DChat is a live chat application where you can chat with other users, send files, block/unblock users, update your profile information, and do a few other things. It uses WebSocket for a snappy experience and notifications.
+### DChat is a live chat application where you can chat with other users, send files, block/unblock users, update your profile information, and do a few other things. It uses WebSocket for a snappy experience and notifications.
 
 ## Architecture Overview
 
@@ -78,7 +78,7 @@ PostgreSQL is used for everything related to data storage, except for file stora
 
 # Docker Swarm
 
-#### **Seven** docker containers are used to build this application along with one Database volume and one file storage volume. These seven containers are run in a docker swarm.
+#### **Six** docker containers are used to build this application along with one Database volume and one file storage volume. These seven containers are run in a docker swarm.
 
 1. **Django Application Container:** The main application where all application logic is implemented. Other containers satisfy the requirements of this container.
 

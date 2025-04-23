@@ -1,0 +1,40 @@
+<div data-media-server-base-url="{{ dchat_media_url }}"
+     id="image-preview-skeleton"
+     class="hidden shadow shadow-black relative mb-2">
+  <a class="open-in-new-window" target="_blank" href="">
+    <img class="w-96 shadow shadow-black rounded" src="" alt="" />
+  </a>
+  <a class="download-link absolute m-2 left-0 top-0" href="">
+    <div class="h-8 bg-[#121212] hover:scale-110 transition p-1 rounded-full">
+      <svg fill="none"
+           height="100%"
+           viewBox="0 0 24 24"
+           width="100%"
+           xmlns="http://www.w3.org/2000/svg">
+        <path d="m6 21h12m-6-18v14m0 0 5-5m-5 5-5-5" stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+      </svg>
+    </div>
+  </a>
+</div>
+<div data-media-server-base-url="{{ dchat_media_url }}"
+     id="attachment-preview-skeleton"
+     class="hidden">
+  <div class="flex mb-2 items-center p-4 gap-4 bg-[#121212] rounded-lg">
+    <div>
+      <a href="" class="download-link">
+        <div class="h-8 bg-[#121212] hover:scale-110 transition p-1 rounded-full">
+          <svg fill="none"
+               height="100%"
+               viewBox="0 0 24 24"
+               width="100%"
+               xmlns="http://www.w3.org/2000/svg">
+            <path d="m6 21h12m-6-18v14m0 0 5-5m-5 5-5-5" stroke="#222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+          </svg>
+        </div>
+      </a>
+    </div>
+    <div class="font-semibold">
+      <span class="attachment-filename"></span>
+    </div>
+  </div>
+</div>

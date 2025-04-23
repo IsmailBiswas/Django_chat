@@ -1,0 +1,81 @@
+version: '3'
+
+volumes:
+  dchat_local_postgres_data: {}
+  dchat_local_postgres_data_backups: {}
+  dchat_local_file_storage: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: dchat_local_django
+    container_name: dchat_local_django
+
+    depends_on:
+      - postgres
+      - redis
+      - mailpit
+
+    volumes:
+      - .:/app
+      - dchat_local_file_storage:/storage
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - '8000:8000'
+    command: /start
+
+  redis:
+    image: redis:6
+    container_name: dchat_local_redis
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: dchat_production_postgres
+    container_name: dchat_local_postgres
+    volumes:
+      - dchat_local_postgres_data:/var/lib/postgresql/data
+      - dchat_local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - "5432:5432"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: dchat_local_mailpit
+    ports:
+      - "8025:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+  celeryworker:
+    <<: *django
+    image: dchat_local_celeryworker
+    container_name: dchat_local_celeryworker
+    depends_on:
+      - redis
+      - postgres
+      - mailpit
+    ports: []
+    command: /start-celeryworker
+
+  mediaserver:
+    build:
+      context: .
+      dockerfile: ./compose/production/media_server/Dockerfile
+    image: dchat_production_mediaserver
+    container_name: dchat_production_mediaserver
+    depends_on:
+      - django
+
+    volumes:
+      - dchat_local_file_storage:/user/share/nginx/storage:ro
+    ports:
+      - "8080:80"

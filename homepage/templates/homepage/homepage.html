@@ -1,0 +1,62 @@
+{% extends "homepage/base.html" %}
+
+{% block connected_users %}
+  <div hx-get="/accounts/newconnections/"
+       hx-trigger="newConnectionEvent from:document, profileUpdateEvent from:body, load"
+       id="new-connection-requests"></div>
+  {% block new_connection_users %}
+  {% endblock new_connection_users %}
+  <div hx-get="/messages/users/"
+       hx-trigger="load, newConnectionEvent from:document, profileUpdateEvent from:body"
+       id="connected-users-list"
+       class="py-2 bg-[#121212] overflow-y-auto flex-1"></div>
+  <div class="bg-black">
+    <code class="text-xs code py-0 px-2 text-gray-400">0.0.0-alpha.1</code>
+  </div>
+{% endblock connected_users %}
+{% block search_input %}
+  <form id="user-search-form"
+        hx-get="/searchusers/"
+        hx-target="#search-result">
+    <div class="w-full h-9 flex">
+      <input type="search"
+             id="user-search-input"
+             autocomplete="off"
+             class="block outline-none p-2 w-full text-sm text-white bg-[#343434] focus:none focus:none"
+             placeholder="Search users"
+             name="search_query"
+             required />
+      <button id="clear-user-search"
+              onclick="clearUserSearch()"
+              type="button"
+              class="h-full stroke-white fill-transparent px-1 hidden text-sm font-medium text-white hover:bg-zinc-500">
+        <svg height="100%"
+             viewBox="0 0 24 24"
+             width="100%"
+             xmlns="http://www.w3.org/2000/svg">
+          <g>
+          <g stroke-linecap="round" stroke-width="2">
+          <path d="m16.9999 7-9.99989 9.9999" />
+          <path d="m7.00006 7 9.99994 9.9999" />
+          </g>
+          </g>
+        </svg>
+      </button>
+      <button type="submit"
+              class="h-full stroke-white active:bg-white active:stroke-black p-1 px-4 bg-[#282828] text-sm font-medium text-white  hover:scale-110">
+        <svg fill="none"
+             height="100%"
+             viewBox="0 0 24 24"
+             width="100%"
+             xmlns="http://www.w3.org/2000/svg">
+          <path d="m14.9536 14.9458 6.0464 6.0542m-4-11c0 3.866-3.134 7-7 7-3.86599 0-7-3.134-7-7 0-3.86599 3.13401-7 7-7 3.866 0 7 3.13401 7 7z"  stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+        </svg>
+      </button>
+    </div>
+  </form>
+  <div class="overflow-y-auto transition-height border-b-white h-0 duration-300 ease-in-out"
+       id="search-result"></div>
+{% endblock search_input %}
+{% block modals %}
+  {% include "homepage/modals.html" %}
+{% endblock modals %}

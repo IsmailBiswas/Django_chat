@@ -1,0 +1,102 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Django Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% comment %} <link rel="stylesheet" href="{% static "tailwindcss.css" %}" /> {% endcomment %}
+    <script src="{% static "htmx.min.js" %}"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet" />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        font-style: normal;
+      }
+    </style>
+  </head>
+  <body class="text-white bg-[#232323] min-w-[250px] overflow-hidden relative">
+    {% block modals %}
+    {% endblock modals %}
+    <div class="relative">
+      <div id="site-container" class="flex">
+        <button type="button"
+                onclick="document.getElementById('sidebar').classList.remove('hidden')"
+                class="w-8 z-20 absolute stroke-white bg-[#121212] active:bg-white active:stroke-black hover:scale-110 active:bg-[#454545] shadow shadow-black m-1">
+          <svg height="100%"
+               viewBox="0 0 24 24"
+               width="100%"
+               xmlns="http://www.w3.org/2000/svg">
+            <g stroke-linecap="round" stroke-width="2">
+            <path d="m5 7h14" />
+            <path d="m5 12h14" />
+            <path d="m5 17h14" />
+            </g>
+          </svg>
+        </button>
+        <div id="sidebar"
+             class="sidebar flex absolute sm:relative z-40 flex-col w-[300px] h-screen">
+          <div class="bg-[#121212]">
+            <div class="flex justify-between">
+              <button type="button"
+                      onclick="document.getElementById('sidebar').classList.add('hidden')"
+                      class="w-8 sm:hidden active:bg-slate-100 stroke-white active:stroke-black m-1">
+                <svg height="100%"
+                     viewBox="0 0 24 24"
+                     width="100%"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <g stroke-width="2">
+                  <path d="m16.9999 7-9.99989 9.9999" />
+                  <path d="m7.00006 7 9.99994 9.9999" />
+                  </g>
+                </svg>
+              </button>
+              <button type="button"
+                      hx-trigger="click, profileUpdateEvent from:body"
+                      hx-target="#content-section"
+                      hx-get="{% url 'user_profile' %}"
+                      class="flex justify-center text-[#fff] items-center active:text-black px-2 fill-transparent active:bg-white  hover:scale-105 m-1">
+                <div class="w-8 h-8 border border-black border-2 border-gray-700 rounded-full mr-2">
+                  <img id="profile-picture"
+                       class="h-full w-full object-cover rounded-full"
+                       src="{{ dchat_media_url }}{{ user.profile.profile_picture.file.url }}?token={{ user.profile.profile_picture.token }}&exp_time={{ user.profile.profile_picture.exp_time }}&hmac={{ user.profile.profile_picture.hmac }}"
+                       alt="user profile picture" />
+                </div>
+                <span>{{ user.username }}</span>
+              </button>
+              <button id="logout"
+                      onclick="toggleLogoutModal()"
+                      type="button"
+                      class="w-8 stroke-[#888] active:stroke-black hover:scale-110  hover:fill-transparent flex justify-center active:bg-white items-center m-1">
+                <svg fill="none"
+                     height="60%"
+                     viewBox="0 0 48 48"
+                     width="60%"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <g stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+                  <path d="m23.9917 6h-17.9917v36h18" />
+                  <path d="m33 33 9-9-9-9" />
+                  <path d="m16 23.9917h26" />
+                  </g>
+                </svg>
+              </button>
+            </div>
+            {% block search_input %}
+            {% endblock search_input %}
+          </div>
+          {% block connected_users %}
+          {% endblock connected_users %}
+        </div>
+        {% block message_section %}
+          <div id="content-section" class="flex relative flex-col w-full h-screen"></div>
+        {% endblock message_section %}
+      </div>
+    </div>
+  </body>
+  <script src="{% static 'homepage/js/homepage.js' %}"></script>
+</html>

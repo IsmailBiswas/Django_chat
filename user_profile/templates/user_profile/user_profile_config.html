@@ -1,0 +1,92 @@
+{% load static %}
+
+<div class="bg-[#181818] relative p-4 profile h-44">
+  <div id="profile-update-submit-response" class="absolute"></div>
+  <form id="user-profile-update-form"
+        enctype="multipart/form-data"
+        hx-post="/user_profile/update_profile/"
+        hx-target="#profile-update-submit-response"
+        class="flex items-center justify-center gap-2 rounded-md p-4">
+    {% csrf_token %}
+    <div class="identify flex flex-col items-center justify-center">
+      <div class="picture relative group">
+        <div id="selected-profile-picture-div" class="hidden h-24 w-24">
+          <img id="selected-profile-picture"
+               class="h-full w-full object-cover rounded-full"
+               src="{{ dchat_media_url }}{{ user.profile.profile_picture.file.url }}?token={{ user.profile.profile_picture.token }}&exp_time={{ user.profile.profile_picture.exp_time }}&hmac={{ user.profile.profile_picture.hmac }}"
+               alt="user profile picture" />
+        </div>
+        <div id="profile-picture-div" class="h-24 w-24">
+          {% if user.profile.profile_picture %}
+            <img id="profile-picture"
+                 class="h-full w-full object-cover border border-2 border-zinc-500 rounded-full"
+                 src="{{ dchat_media_url }}{{ user.profile.profile_picture.file.url }}?token={{ user.profile.profile_picture.token }}&exp_time={{ user.profile.profile_picture.exp_time }}&hmac={{ user.profile.profile_picture.hmac }}"
+                 alt="user profile picture" />
+          {% else %}
+            <svg fill="none"
+                 height="100%"
+                 viewBox="0 0 24 24"
+                 width="100%"
+                 xmlns="http://www.w3.org/2000/svg">
+              <g fill="white">
+              <path d="m22 12c0 5.5228-4.4772 10-10 10-5.52285 0-10-4.4772-10-10 0-5.52285 4.47715-10 10-10 5.5228 0 10 4.47715 10 10z" opacity=".5" />
+              <path d="m16.807 19.0112c-1.3672.9392-3.0229 1.4888-4.807 1.4888s-3.43977-.5497-4.807-1.4889c-.60385-.4148-.86191-1.2049-.51081-1.8479.72782-1.333 2.22754-2.1632 5.31781-2.1632 3.0903 0 4.59.8303 5.3178 2.1632.3511.643.093 1.4332-.5108 1.848z" />
+              <path d="m12 12c1.6569 0 3-1.3431 3-3 0-1.65685-1.3431-3-3-3-1.6568 0-2.99996 1.34315-2.99996 3 0 1.6569 1.34316 3 2.99996 3z" />
+              </g>
+            </svg>
+          {% endif %}
+        </div>
+        <label for="file-upload"
+               class="edit-photo h-8 bg-gray-400 rounded-lg absolute right-0 bottom-0">
+          <div class="stroke-black  rounded fill-white bg-black cursor-pointer h-8 hover:scale-105 w-8 active:fill-black active:bg-white active:stroke-white">
+            <svg height="100%"
+                 viewBox="0 0 24 24"
+                 class="h-8 rounded absolute bottom-0 right-0"
+                 width="100%"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path d="m19 13a1 1 0 0 0 -1 1v.38l-1.48-1.48a2.79 2.79 0 0 0 -3.93 0l-.7.7-2.48-2.48a2.85 2.85 0 0 0 -3.93 0l-1.48 1.48v-5.6a1 1 0 0 1 1-1h7a1 1 0 0 0 0-2h-7a3 3 0 0 0 -3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-5a1 1 0 0 0 -1-1zm-14 7a1 1 0 0 1 -1-1v-3.57l2.9-2.9a.79.79 0 0 1 1.09 0l3.17 3.17 4.3 4.3zm13-1a.89.89 0 0 1 -.18.53l-4.51-4.53.7-.7a.77.77 0 0 1 1.1 0l2.89 2.91zm4.71-14.71-3-3a1 1 0 0 0 -.33-.21 1 1 0 0 0 -.76 0 1 1 0 0 0 -.33.21l-3 3a1 1 0 0 0 1.42 1.42l1.29-1.3v5.59a1 1 0 0 0 2 0v-5.59l1.29 1.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42z" />
+            </svg>
+          </div>
+        </label>
+        <input class="hidden"
+               name="new_profile_picture"
+               id="file-upload"
+               onchange="showSelectedProfilePic(event)"
+               type="file"
+               accept="image/*" />
+      </div>
+      <div id="display-name"
+           class="hover:scale-110 active:text-white cursor-pointer block text-[#ddd] text-lg">
+        {% if user.profile.display_name %}
+          <span>{{ user.profile.display_name }}</span>
+        {% else %}
+          <span>{{ user.username }}</span>
+        {% endif %}
+      </div>
+      <div id="edit-display-name" class="mt-2 hidden">
+        {% if user.profile.display_name %}
+          <input type="text" class="px-2 py-1 rounded" placeholder={{ user.profile.display_name }} name="new_username" id="dispaly-name" />
+        {% else %}
+          <input type="text" class="px-2 py-1 rounded" placeholder={{ user.username }} name="new_username" id="dispaly-name" />
+        {% endif %}
+      </div>
+    </div>
+    <div id="profile-update-action-buttons" class="hidden">
+      <button id="profile-update-form-clear"
+              class="bg-red-500 py-1 px-2 rounded-md"
+              type="reset">X</button>
+      <button class="bg-green-400 py-1 px-2 rounded-md" type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+<div class="config font-bold p-4  bg-[#232323] flex-1">
+  <div>
+    <span class="font-semibold text-[#aaa] ">Blocked Connection</span>
+    <div class="max-w-96 bg-black shadow shadow-black rounded overflow-y-auto min-h-14 max-h-[350px]">
+      <div hx-get=" {% url "blocked_users" %} "
+           class="overflow-y-auto"
+           hx-trigger="load"></div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'user_profile/js/user_profile_config.js' %}"></script>

@@ -1,0 +1,18 @@
+{
+  "name": "tailwindcss",
+  "version": "0.0.1",
+  "description": "The purpose of this npm project is to compile the tailwind css for DChat.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "no"
+  },
+  "author": "ismail",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

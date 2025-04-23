@@ -1,0 +1,188 @@
+{% load static %}
+
+<div class="flex flex-col w-full h-screen">
+  {% if user_exists %}
+    {% include "dchat_messages/attachment_preview.html" %}
+    <div id="text-container-skeleton" class="hidden">
+      <p class="w-fit max-w-[550px] bg-transparent border text-white shadow-md shadow-black px-4 py-1 m-2 wrap"></p>
+    </div>
+    <div class="w-full gap-2 text-[#ddd] flex items-center p-2 pl-16 bg-transparent absolute">
+      <div class="bg-[#121212] border border-white border-2 h-14 w-14 flex items-center z-20 justify-center rounded-full">
+        {% if recipient_user.profile.profile_picture %}
+          <img src="{{ dchat_media_url }}{{ recipient_user.profile.profile_picture.file.url }}?token={{ recipient_user.profile.profile_picture.token }}&exp_time={{ recipient_user.profile.profile_picture.exp_time }}&hmac={{ recipient_user.profile.profile_picture.hmac }}"
+               class="rounded-full h-full w-full object-cover"
+               alt=""
+               srcset="" />
+        {% else %}
+          <svg fill="none"
+               height="100%"
+               viewBox="0 0 24 24"
+               width="100%"
+               xmlns="http://www.w3.org/2000/svg">
+            <g fill="#1c274c">
+            <path d="m22 12c0 5.5228-4.4772 10-10 10-5.52285 0-10-4.4772-10-10 0-5.52285 4.47715-10 10-10 5.5228 0 10 4.47715 10 10z" opacity=".5" />
+            <path d="m16.807 19.0112c-1.3672.9392-3.0229 1.4888-4.807 1.4888s-3.43977-.5497-4.807-1.4889c-.60385-.4148-.86191-1.2049-.51081-1.8479.72782-1.333 2.22754-2.1632 5.31781-2.1632 3.0903 0 4.59.8303 5.3178 2.1632.3511.643.093 1.4332-.5108 1.848z" />
+            <path d="m12 12c1.6569 0 3-1.3431 3-3 0-1.65685-1.3431-3-3-3-1.6568 0-2.99996 1.34315-2.99996 3 0 1.6569 1.34316 3 2.99996 3z" />
+            </g>
+          </svg>
+        {% endif %}
+      </div>
+      {% if recipient_user.profile.display_name %}
+        {# djlint:off #}  <span class="z-20" id="connection-id" data-connection-type="user" data-username={{ recipient_user.username }} class="text-gray-100 font-bold">{{ recipient_user.profile.display_name }}</span>
+                    {% else %}
+        <span class="z-20" id="connection-id" data-connection-type="user" data-username={{ recipient_user.username }} class="text-gray-100 font-bold">{{ recipient_user.username }}</span> {# djlint:on #}
+      {% endif %}
+    </div>
+  {% endif %}
+  {% if connection %}
+    {% if connection.status == "ACCEPTED" %}
+      <div id="scrollable-message-div"
+           class="h-screen overflow-y-scroll flex flex-col-reverse">
+        <div id="message-container"
+             class="flex flex-col items-end px-2 justify-end flex-1 bg-[#232323]">
+          {% include "dchat_messages/chat_history.html" %}
+        </div>
+      </div>
+      <div class="flex items-center justify-center pr-2 gap-2 bg-transparent">
+        <input type="text"
+               id="message-text-input"
+               class="block min-w-[150px] p-2 outline-none w-full max-w-[400px] z-20 text-white bg-[#121212] border"
+               placeholder="Enter message"
+               autocomplete="off"
+               required />
+        <div class="flex items-center">
+          <button id="message-submit-btn"
+                  type="submit"
+                  class="stroke-black bg-red-500 fill-white hover:fill-[#ddd] h-6 w-6 hover:scale-125 hover:stroke-[#343434]">
+            <svg fill="white"
+                 height="100%"
+                 viewBox="0 0 24 24"
+                 width="100%"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path d="m7.6921 11.8974 1.41053.4701h.00001c.93106.3104 1.39656.4656 1.73046.7994.3338.3339.489.7994.7994 1.7305l.4701 1.4105c.7844 2.3532 1.1766 3.5298 1.8974 3.5298s1.113-1.1766 1.8974-3.5298l2.8377-8.51317c.5519-1.65579.8279-2.48368.3909-2.9207-.437-.43701-1.2649-.16105-2.9207.39088l-8.5132 2.83772c-2.35321.78441-3.52982 1.17661-3.52982 1.89737 0 .7208 1.1766 1.113 3.52981 1.8974z" fill="white" />
+              <path d="m7.6921 11.8974 1.41053.4701h.00001c.93106.3104 1.39656.4656 1.73046.7994.3338.3339.489.7994.7994 1.7305l.4701 1.4105c.7844 2.3532 1.1766 3.5298 1.8974 3.5298s1.113-1.1766 1.8974-3.5298l2.8377-8.51317c.5519-1.65579.8279-2.48368.3909-2.9207-.437-.43701-1.2649-.16105-2.9207.39088l-8.5132 2.83772c-2.35321.78441-3.52982 1.17661-3.52982 1.89737 0 .7208 1.1766 1.113 3.52981 1.8974z" fill="whtie" />
+              <path d="m9.52566 13.8419-2.06167-.6872c-.29276-.0976-.61417-.0546-.87093.1166l-1.08835.7256c-.57787.3852-.42404 1.2733.24973 1.4417l1.95452.4886c.17914.0448.31902.1847.3638.3638l.48863 1.9546c.16844.6737 1.05651.8276 1.44171.2497l.7256-1.0884c.1712-.2567.2142-.5781.1166-.8709l-.6872-2.0617c-.0995-.2986-.33384-.5329-.63244-.6324z" fill="white" />
+            </svg>
+          </button>
+        </div>
+        <input id="recipient_username"
+               type="hidden"
+               name="recipient_username"
+               value="{{ recipient_user.username }}" />
+        <div class="flex items-center justify-center ">
+          <label for="message-file-input"
+                 class="stroke-black bg-red-500 fill-white hover:fill-[#ddd] h-6 w-6 hover:scale-110 hover:stroke-[#343434]">
+            <svg height="100%"
+                 viewBox="0 0 24 24"
+                 width="100%"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path d="m20 10.9696-8.0372 7.5801c-.9846.9286-2.32006 1.4503-3.71252 1.4503s-2.72789-.5217-3.71251-1.4503-1.53777-2.1881-1.53777-3.5014c0-1.3132.55315-2.5727 1.53777-3.5013l8.03723-7.58013c.6564-.61908 1.5467-.96687 2.475-.96687s1.8186.34779 2.475.96687 1.0252 1.45873 1.0252 2.33424-.3688 1.71517-1.0252 2.33424l-8.04596 7.58005c-.32821.3096-.77335.4835-1.2375.4835-.46416 0-.9093-.1739-1.23751-.4835-.3282-.3095-.51259-.7293-.51259-1.1671 0-.4377.18439-.8576.51259-1.1671l7.42497-6.99446"  stroke-linecap="round" stroke-linejoin="round" stroke-width="1" />
+            </svg>
+          </label>
+          <input class="hidden"
+                 onchange="showSelectedFileName()"
+                 id="message-file-input"
+                 type="file" />
+          <span class="whitespace-nowrap" id="selected-file-name"></span>
+          <button id="file-input-clean-btn"
+                  class="hidden"
+                  onclick="removeSelectedFile()"
+                  type="button">
+            <div class="h-6 w-6">
+              <svg height="100%"
+                   viewBox="0 0 24 24"
+                   width="100%"
+                   xmlns="http://www.w3.org/2000/svg">
+                <g fill="none" fill-rule="evenodd">
+                <path d="m0 0h24v24h-24z" fill-rule="nonzero" />
+                <g stroke="#0c0310" stroke-linecap="round" stroke-width="2">
+                <path d="m16.9999 7-9.99989 9.9999" />
+                <path d="m7.00006 7 9.99994 9.9999" />
+                </g>
+                </g>
+              </svg>
+            </div>
+          </button>
+        </div>
+      </div>
+    {% else %}
+      <div class="flex flex-col flex-1">
+        <div id="connection-status"
+             class="flex flex-col items-center justify-center bg-[#121212] flex-1">
+          <p class="font-semibold text-2xl">
+            Connection Status:
+            <span>{{ connection.status }}</span>
+          </p>
+          {% if connection.status == "REJECTED" %}
+            <form hx-target="#connection-status"
+                  hx-post="{% url "send_connection_request" %}"
+                  class="flex flex-col items-center">
+              {% csrf_token %}
+              <input type="hidden"
+                     name="recipient_username"
+                     value="{{ recipient_user.username }}" />
+              {% if connection.status == "REJECTED" and connection.user_initiator.username == recipient_user.username %}
+                <p class="text-sm font-serif text-green-900 font-semibold">You rejected the connection</p>
+              {% endif %}
+              <button class="text-white align-middle select-none text-center text-sm py-1 px-2 my-3 rounded-md border border-black shadow-md shadow-black hover:shadow-lg hover:shadow-gray-900/20, bg-[#232323] font-serif border font-semibold"
+                      type="submit">Send Chat request</button>
+            </form>
+          {% endif %}
+          {% if connection.status == "BLOCKED" and connection.user_initiator.username == recipient_user.username %}
+            <p class="text-sm font-serif text-green-900 font-semibold">Connection is blocked by you</p>
+          {% endif %}
+          {% if connection.status == "PENDING" and connection.user_initiator.username == recipient_user.username %}
+            <div class="flex gap-4">
+              <form hx-target="#content-section"
+                    hx-post="{% url "connection_response" %}"
+                    class="">
+                {% csrf_token %}
+                <input type="hidden"
+                       name="sender_username"
+                       value="{{ recipient_user.username }}" />
+                <input type="hidden" name="action" value="accept" />
+                <button class="text-black align-middle select-none text-center text-sm py-1 px-2 my-3 rounded-md shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20, bg-green-500 font-serif border-2 border-green-600 font-semibold"
+                        type="submit">Accept</button>
+              </form>
+              <form hx-target="#content-section"
+                    hx-post="{% url "connection_response" %}"
+                    class="">
+                {% csrf_token %}
+                <input type="hidden"
+                       name="sender_username"
+                       value="{{ recipient_user.username }}" />
+                <input type="hidden" name="action" value="reject" />
+                <button class="text-black align-middle select-none text-center text-sm py-1 px-2 my-3 rounded-md shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20, bg-yellow-500 font-serif border-2 border-yellow-600 font-semibold"
+                        type="submit">Reject</button>
+              </form>
+              <form hx-target="#content-section"
+                    hx-post="{% url "connection_response" %}"
+                    class="">
+                {% csrf_token %}
+                <input type="hidden"
+                       name="sender_username"
+                       value="{{ recipient_user.username }}" />
+                <input type="hidden" name="action" value="block" />
+                <button class="text-black align-middle select-none text-center text-sm py-1 px-2 my-3 rounded-md shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20, bg-red-500 font-serif border-2 border-red-600 font-semibold"
+                        type="submit">Block</button>
+              </form>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="flex flex-col flex-1">
+      <form hx-post="{% url "send_connection_request" %}"
+            class="flex items-center justify-center bg-[#232323] flex-1">
+        {% csrf_token %}
+        <input type="hidden"
+               name="recipient_username"
+               value="{{ recipient_user.username }}" />
+        <button class="align-middle bg-[#121212] select-none font-bold text-center uppercase text-md py-3 px-6 rounded-md shadow-md shadow-black hover:scale-105"
+                type="submit">Send Chat Request</button>
+      </form>
+    </div>
+  {% endif %}
+</div>
+<script src="{% static 'dchat_messages/js/user_connection.js' %}"></script>

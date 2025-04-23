@@ -1,0 +1,49 @@
+{% block logout_modal %}
+  <div onclick="toggleLogoutModal()"
+       id="logout-modal-bg"
+       class="absolute hidden flex h-screen w-screen items-center justify-center z-20"></div>
+  <div id="logout-modal"
+       class="flex hidden shadow-xl flex-col border shadow-black gap-6 rounded-md p-4 w-96 h-32 bg-[#121212] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-full z-50">
+    <div class="text-center">
+      <span class="text-white text-2xl font-bold uppercase">Confirm log out</span>
+    </div>
+    <div class="flex justify-center gap-12 w-full">
+      <button onclick="toggleLogoutModal()"
+              class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+        Cancel
+      </button>
+      <form action="{% url "log_out" %}" method="post">
+        {% csrf_token %}
+        <button type="submit"
+                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+          Logout
+        </button>
+      </form>
+    </div>
+  </div>
+{% endblock logout_modal %}
+{% block socket_disonnect_modal %}
+  <div onclick="toggleSocketDisconnectModal()"
+       id="socket-disconnect-modal-bg"
+       class="absolute flex hidden h-screen w-screen items-center justify-center z-20"></div>
+  <div id="websocket-disconnect-modal"
+       class="flex  shadow-xl flex-col border hidden shadow-black gap-2 rounded-md p-4 w-96 h-32 bg-[#121212] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-full z-50">
+    <div class="h-12">
+      <svg fill="none"
+           height="100%"
+           viewBox="0 0 24 24"
+           width="100%"
+           xmlns="http://www.w3.org/2000/svg">
+        <path clip-rule="evenodd" d="m13.0619 4.4295c-.4406-.88164-1.6983-.88164-2.139 0l-7.03282 14.0711c-.39752.7953.18061 1.7311 1.06949 1.7311h14.06573c.8889 0 1.467-.9358 1.0695-1.7311zm-3.71994-.7908c1.09204-2.18494 4.20884-2.18493 5.30094.00001l7.0329 14.07109c.9851 1.9711-.4476 4.2902-2.6505 4.2902h-14.06573c-2.20288 0-3.63562-2.3191-2.65047-4.2902z" fill="#aa1c1c" fill-rule="evenodd" />
+        <g stroke="#dd0000" stroke-linecap="round" stroke-width="1.7">
+        <path d="m12 8v5" />
+        <path d="m12 16v.5" />
+        </g>
+      </svg>
+    </div>
+    <div class="text-center">
+      <p class=" font-bold">WebSocket got disconnected</p>
+      <p>Refresh to reconnect</p>
+    </div>
+  </div>
+{% endblock socket_disonnect_modal %}

@@ -1,0 +1,50 @@
+{% for user in users %}
+  <div id="blocked-{{ user.username }}"
+       class="flex items-center justify-between bg-red-500 px-2 py-1 rounded m-1 text-white font-semibold hover:text-black shadow-lg hover:bg-red-700">
+    <div class="flex items-center gap-2 w-64">
+      <div class="bg-slate-200 h-10 w-10 flex items-center justify-center rounded-full">
+        {% if user.profile.profile_picture %}
+          <img src="{{ dchat_media_url }}{{ user.profile.profile_picture.file.url }}?token={{ user.profile.profile_picture.token }}&exp_time={{ user.profile.profile_picture.exp_time }}&hmac={{ user.profile.profile_picture.hmac }}"
+               class="rounded-full h-full w-full object-cover"
+               alt=""
+               srcset="" />
+        {% else %}
+          <svg fill="none"
+               height="100%"
+               viewBox="0 0 24 24"
+               width="100%"
+               xmlns="http://www.w3.org/2000/svg">
+            <g fill="#1c274c">
+            <path d="m22 12c0 5.5228-4.4772 10-10 10-5.52285 0-10-4.4772-10-10 0-5.52285 4.47715-10 10-10 5.5228 0 10 4.47715 10 10z" opacity=".5" />
+            <path d="m16.807 19.0112c-1.3672.9392-3.0229 1.4888-4.807 1.4888s-3.43977-.5497-4.807-1.4889c-.60385-.4148-.86191-1.2049-.51081-1.8479.72782-1.333 2.22754-2.1632 5.31781-2.1632 3.0903 0 4.59.8303 5.3178 2.1632.3511.643.093 1.4332-.5108 1.848z" />
+            <path d="m12 12c1.6569 0 3-1.3431 3-3 0-1.65685-1.3431-3-3-3-1.6568 0-2.99996 1.34315-2.99996 3 0 1.6569 1.34316 3 2.99996 3z" />
+            </g>
+          </svg>
+        {% endif %}
+      </div>
+      <div>
+        {% if user.profile.display_name %}
+          <span class="w-36 overflow-hidden select-none whitespace-nowrap">{{ user.profile.display_name }}</span>
+        {% else %}
+          <span class=" w-36 overflow-hidden select-none whitespace-nowrap">{{ user.username }}</span>
+        {% endif %}
+      </div>
+    </div>
+    <form hx-post="{% url "unblock_user" %}"
+          hx-target="#unblock-button-{{ user.username }}">
+      {% csrf_token %}
+      <input type="text"
+             class="hidden "
+             name="blocked_username"
+             value="{{ user.username }}" />
+      <button id="unblock-button-{{ user.username }}"
+              class="transition hover:scale-105 rounded bg-white select-none text-black px-4 py-1"
+              type="submit">Unblock</button>
+    </form>
+  </div>
+{% endfor %}
+{% if users|length == 0 %}
+  <div class="text-center text-[#999] m-4">
+    <span>You didn't block any user</span>
+  </div>
+{% endif %}

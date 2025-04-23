@@ -1,0 +1,7 @@
+{% if display_name_changed and user_profile_changed %}
+  <span class="text-green-400">Display Name and Profile Picture updated</span>
+{% elif display_name_changed %}
+  <span class="text-green-400">Only Display Name Updated.</span>
+{% else %}
+  <span class="text-green-400">Only Profile Picture Updated.</span>
+{% endif %}

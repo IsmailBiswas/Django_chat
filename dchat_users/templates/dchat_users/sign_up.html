@@ -1,0 +1,73 @@
+{% load widget_tweaks %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{% static "tailwindcss.css" %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet" />
+  </head>
+  <style>
+    * {
+      font-family: "Roboto", system-ui;
+      font-style: normal;
+    }
+  </style>
+  <body class="h-screen flex text-white">
+    <div class="p-4 w-[540px] min-w-[400px] bg-[#232323]">
+      <div class=" flex items-center flex-col">
+        <div>
+          <p class="text-2xl font-bold">Create your account</p>
+          {% for msg in messages %}
+            <div class="bg-[#343434] shadow-md text-center mt-4 shadow-black px-4 py-2">
+              <span class="text-lg text-white">🎉 Account Created!</span>
+              <span class="text-lg text-white">Login
+                <a class="text-blue-300"href="{% url 'log_in' %}">here</a>
+              </span>
+            </div>
+          {% endfor %}
+          <div class="the fields w-[400px] mt-6">
+            <form class="flex  gap-4 flex-col" method="post">
+              {% csrf_token %}
+              {% for field in form %}
+                <div class="flex flex-col">
+                  <span class="py-1">{{ field.label }}</span>
+                  {% render_field field autocomplete="off" class+="h-9 text-black pl-2 border border-slate-400" %}
+                  {% if field.errors %}
+                    <div class="flex items-center gap-1 py-1 text-red-600">
+                      <div class="h-4 stroke-red-600">
+                        <svg fill="none"
+                             height="100%"
+                             viewBox="0 0 24 24"
+                             width="100%"
+                             xmlns="http://www.w3.org/2000/svg">
+                          <path d="m12 16h.01m-.01-8v4m0 9c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-4.97056 0-9 4.02944-9 9 0 4.9706 4.02944 9 9 9z"  stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                        </svg>
+                      </div>
+                      <span class="text-sm">
+                        {% for error in field.errors %}{{ error }}{% endfor %}
+                      </span>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+              <div>
+                <button class="px-4 mt-4 bg-black hover:scale-105 h-9" type="submit">Sign Up</button>
+              </div>
+            </form>
+            <div class="py-4 text-sm">
+              <span>Already have an account? Log in <a class="text-blue-500" href="{% url 'log_in' %}">here</a> </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sm:flex-1 hidden lg:block bg-[#121212] "></div>
+  </body>
+</html>

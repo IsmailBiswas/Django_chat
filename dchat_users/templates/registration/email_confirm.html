@@ -1,0 +1,20 @@
+{% load i18n %}
+
+{% autoescape off %}
+  <div style="padding:12px 0 0 64px">
+    <p style="font-size: 22px; color:#222">{% blocktranslate %}Welcome to DChat!{% endblocktranslate %}</p>
+    <p style="color:#222; margin:0;">
+      {% translate "You're almost in. Just click the link below to confirm your email: " %}
+    </p>
+    {% block reset_link %}
+      <p style="margin:8px 0 0 0;">
+        <a href="{{ protocol }}://{{ domain }}{% url 'email_verify' uidb64=uid token=token %}">Confirm Email</a>
+      </p>
+    {% endblock reset_link %}
+    {% translate "" %}
+    <div style="color: #444; margin-top: 24px">
+      <p style="font-size:16px; margin:12px 0 0 0;">See you inside,</p>
+      <p style="font-size: 14px; margin:0;">{% blocktranslate %}The DChat dev{% endblocktranslate %}</p>
+    </div>
+  </div>
+{% endautoescape %}

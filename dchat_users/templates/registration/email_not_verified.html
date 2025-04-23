@@ -1,0 +1,58 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{% static "tailwindcss.css" %}" />
+    <title>Verify Email</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet" />
+  </head>
+  <style>
+    * {
+      font-family: "Roboto", system-ui;
+      font-style: normal;
+    }
+  </style>
+  <body class="min-w-[300px] text-[#ddd] bg-[#121212]">
+    <div class="flex justify-center mt-32 text-lg">
+      <span class="bg-black py-2 px-4  border border-[#343434]">Hey there! Please click the link we sent to your email to confirm it's really you.</span>
+    </div>
+    <div class="flex mt-8 gap-8 flex-wrap whitespace-nowrap text-[#bbb] justify-center">
+      <a href="{% url 'homepage' %}">
+        <button type="button"
+                class="hover:scale-105 active:bg-black shadow-lg shadow-black active:text-white border border-[#999] px-4">
+          Refresh
+        </button>
+      </a>
+      {% if email_sent %}
+        <button type="button"
+                class="opacity-50 cursor-not-allowed border border-[#999] px-4">Resend Verification Email</button>
+      {% else %}
+        <form action="{% url 'resend_email_verification' %}" method="post">
+          {% csrf_token %}
+          <button type="submit"
+                  class="hover:scale-105 active:bg-black shadow-lg shadow-black active:text-white border border-[#999] px-4">
+            Resend Verification Email
+          </button>
+        </form>
+      {% endif %}
+      <form action="{% url 'log_out' %}" method="post">
+        {% csrf_token %}
+        <button type="submit"
+                class="hover:scale-105 active:bg-black shadow-lg shadow-black active:text-white border-[#999] border px-4">
+          Logout
+        </button>
+      </form>
+    </div>
+    {% if email_sent %}
+      <div class="text-center mt-8 text-green-400">
+        <span>Verification email has been sent!</span>
+      </div>
+    {% endif %}
+  </body>
+</html>
